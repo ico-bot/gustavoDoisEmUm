@@ -83,10 +83,10 @@ function App() {
         <section className="bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-6xl text-center">
             <h1 className="mx-auto max-w-3xl font-display text-4xl font-bold leading-tight text-brand-dark sm:text-5xl lg:text-6xl">
-              Rota 10x: o método testado e aprovado por mais de 400 mulheres para você parar de tentar no escuro e saber exatamente o que comer e como treinar.
+              Aula: Como diminuir o número da balança sem dietas malucas e sem depender de sorte
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-700">
-              Um plano prático para emagrecer sem sofrimento, com treino, alimentação e clareza para você seguir com segurança e sem depender de sorte.
+            <p className="mx-auto mt-6 max-w-3xl text-lg font-semibold leading-8 text-brand-dark sm:text-xl">
+              Rota 10x: O método testado e aprovado por mais de 400 mulheres para você parar de tentar emagrecer no escuro e saber exatamente o que comer e como treinar
             </p>
 
             <motion.div
@@ -104,8 +104,8 @@ function App() {
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15">
                         <VolumeX className="h-6 w-6" />
                       </div>
-                      <p className="text-lg font-semibold">Seu vídeo já começou</p>
-                      <p className="text-sm text-white/90">Clique para ouvir</p>
+                      <p className="text-lg font-semibold">Seu vídeo já começou.</p>
+                      <p className="text-sm text-white/90">Clique para assistir</p>
                     </div>
                   </button>
                 </div>
@@ -297,9 +297,9 @@ function App() {
               <div className="relative">
                 <div className="absolute inset-x-0 top-0 flex justify-center">
                   <h2 className="font-display text-3xl font-bold text-brand-dark sm:text-4xl">
-                    <span className="text-green-400">jeito certo</span>
+                    <span className="text-green-400">Com o Rota 10x</span>
                     <span className="mx-2 text-[#FACC15]">vs</span>
-                    <span className="text-red-400">jeito errado</span>
+                    <span className="text-red-400">Sem o Rota 10X</span>
                   </h2>
                 </div>
                 <div className="mt-16 grid gap-6 rounded-[2rem] bg-green-50 p-1 lg:grid-cols-2">
