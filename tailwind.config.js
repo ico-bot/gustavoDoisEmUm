@@ -12,8 +12,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Fredoka', 'sans-serif'],
-        display: ['Fredoka', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
+        display: ['Poppins', 'sans-serif'],
       },
       boxShadow: {
         soft: '0 20px 45px -25px rgba(233, 30, 99, 0.35)',
