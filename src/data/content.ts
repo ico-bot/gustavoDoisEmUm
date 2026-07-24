@@ -18,37 +18,37 @@ export const heroStats = [
 
 export const benefits = [
   {
-    title: 'Chega de perder tempo',
-    description: 'Treinos e dieta prontos, sem precisar pesquisar nada.',
+    title: 'Chega de treinos genéricos da academia.',
+    description: 'Você terá acesso a uma metodologia de treinos realmente eficiente.',
     icon: Clock3,
     color: '#6B7280',
   },
   {
-    title: 'Coma o que gosta',
-    description: 'Sem cortar arroz, pão ou doce, só ajustando a quantidade certa.',
+    title: 'Chega de passar fome para emagrecer ',
+    description: 'Você vai poder comer arroz, pão, macarrão! Tudo na quantidade exata.',
     icon: UtensilsCrossed,
     color: '#F28C28',
   },
   {
     title: 'Resultado visível em semanas',
-    description: 'Método já testado por mais de 400 mulheres.',
+    description: 'Em 10 semanas você verá seu corpo mudar completamente.',
     icon: TrendingUp,
     color: '#2E8B57',
   },
   {
     title: 'Até 10x mais barato',
-    description: 'Do que contratar personal e nutricionista separadamente.',
+    description: 'Tudo isso gastando 10X menos',
     icon: CircleDollarSign,
     color: '#FACC15',
   },
 ];
 
 export const productItems = [
-  'Avaliação inicial com fotos e medidas para comparar o antes e depois.',
-  'Identificação do seu nível de treino (iniciante, intermediária ou avançada).',
-  'Cálculo exato do seu gasto calórico.',
-  'Cardápio com a quantidade exata que você precisa comer.',
-  'Treinos gravados, liberados conforme o seu nível, pelo app ou plataforma.',
+  'Faça uma avaliação com fotos e medidas para comparar seus resultados.',
+  'Identifique seu nível de treinamento para saber por onde começar.',
+  'Faça o cálculo do seu gasto calórico para saber exatamente quanto precisa comer.',
+  'Baixe o cardápio e siga a dieta referente ao seu objetivo.',
+  'Dê início aos treinos do Rota 10x, para treinar em casa ou na academia.',
 ];
 
 export const audienceItems = [
@@ -60,47 +60,42 @@ export const audienceItems = [
 ];
 
 export const journeySteps = [
-  { title: 'Avaliação', description: 'Fotos e medidas iniciais.' },
-  { title: 'Nível de treino', description: 'Identificação do seu ponto de partida.' },
-  { title: 'Cálculo calórico', description: 'Quanto você precisa comer.' },
-  { title: 'Cardápio', description: 'Quantidade exata definida para você.' },
-  { title: 'Treinos', description: 'Início conforme o seu nível.' },
-];
-
-export const completeBenefits = [
-  'Fim do efeito sanfona e resultado que se mantém.',
-  'Autoestima de volta ao se olhar no espelho.',
-  'Clareza total para saber exatamente o que fazer.',
-  'Mais confiança e resistência no dia a dia.',
-  'Economia de até 10x em relação a profissionais separados.',
-  'Flexibilidade para treinar em casa ou na academia.',
+  'Uma programação de treinos completa para você mudar seu corpo em 10 semanas, treinando em casa ou na academia.',
+  'Vídeos de todos os exercícios para você não ficar perdida na academia.',
+  'Treinos gravados na íntegra para treinar em casa no melhor horário pra você!',
+  'Calculadora específica para saber exatamente o seu gasto calórico.',
+  'Cardápio Flexível com as dietas todas calculadas, para comer na quantidade exata que você precisa.',
 ];
 
 export const faqs = [
   {
-    question: 'Preciso de equipamento para treinar em casa?',
+    question: 'Preciso de equipamentos para treinar em casa?',
     answer:
-      'Não. Os treinos são adaptados para o seu nível e ambiente, seja em casa ou na academia.',
+      'Não! A maioria dos exercícios é realizado com o peso do próprio corpo! No máximo utilizamos duas garrafas com água para usar como halteres.',
   },
   {
     question: 'Funciona mesmo se eu nunca treinei antes?',
     answer:
-      'Sim. O método identifica seu nível e adapta os treinos para você.',
+      'Sim! Você terá treinos de adaptação, voltados para pessoas que nunca treinaram ou estão há muito tempo sem treinar.',
   },
   {
     question: 'Vou precisar cortar arroz, pão ou doce?',
     answer:
-      'Não. O cardápio é calculado com a quantidade certa para você, sem cortar o que você gosta.',
+      'Não! O Cardápio é composto por alimentos do dia a dia, só que tudo calculado. Podendo incluir até um docinho sem prejudicar o processo.',
   },
   {
     question: 'Quanto tempo tenho de acesso?',
     answer: 'Você tem 1 ano de acesso completo pela plataforma ou aplicativo.',
   },
   {
-    question: 'Em quanto tempo vejo resultado?',
+    question: 'Como terei acesso aos treinos?',
     answer:
-      'O método é estruturado para 10 semanas, com avaliação inicial e final para comparar o progresso.',
+      'Você pode acessar pelo notebook, pelo celular com o aplicativo e pode até colocar na televisão para fazer os treinos em casa.',
   },
+  {
+    question: 'Em quanto tempo vejo resultado?',
+    answer: 'Se colocar em prática o passo a passo do Rota 10x, o seu corpo vai mudar completamente em até 10 semanas.'
+  }
 ];
 
 export const testimonials = [
@@ -122,9 +117,14 @@ export const testimonials = [
 ];
 
 export const headerLinks = [
+  { label: 'Início', href: '#hero' },
+  { label: 'Depoimentos', href: '#testimonials' },
   { label: 'Benefícios', href: '#benefits' },
   { label: 'Conteúdo', href: '#product' },
-  { label: 'Depoimentos', href: '#testimonials' },
+  { label: 'Professor', href: '#professor' },
+  { label: 'Para quem é', href: '#audience' },
+  { label: 'Comparativo', href: '#comparison' },
+  { label: 'Oferta', href: '#offer' },
   { label: 'FAQ', href: '#faq' },
 ];
 

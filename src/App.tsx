@@ -5,7 +5,9 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Menu,
   VolumeX,
+  X,
 } from 'lucide-react';
 import professorImage from './assets/professor.png';
 import {
@@ -13,7 +15,6 @@ import {
   benefits,
   ctaIcon,
   ctaLabel,
-  completeBenefits,
   faqs,
   headerLinks,
   heroStats,
@@ -22,14 +23,20 @@ import {
   testimonials,
 } from './data/content';
 
-const CtaButton = ({ compact = false }: { compact?: boolean }) => {
+const CtaButton = ({
+  compact = false,
+  label = ctaLabel,
+}: {
+  compact?: boolean;
+  label?: string;
+}) => {
   const Icon = ctaIcon;
   return (
     <a
       href="#offer"
       className={`group inline-flex items-center justify-center gap-2 rounded-full bg-brand-pink px-6 py-3 font-semibold text-white transition hover:bg-[#d0175b] ${compact ? 'px-5 py-2.5 text-sm' : 'px-8 py-3.5 text-base'}`}
     >
-      {ctaLabel}
+      {label}
       <Icon className="h-5 w-5 transition group-hover:translate-x-1" />
     </a>
   );
@@ -38,6 +45,7 @@ const CtaButton = ({ compact = false }: { compact?: boolean }) => {
 function App() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [activeTestimonial, setActiveTestimonial] = useState(1);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -64,20 +72,57 @@ function App() {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <header className="border-b border-pink-100 bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-pink-200 bg-white/60 shadow-sm backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <a href="#hero" className="font-display text-xl font-bold text-brand-dark">
+          <a href="#hero" onClick={() => setIsMobileMenuOpen(false)} className="font-display text-xl font-bold text-brand-dark">
             Gustavo <span className="text-brand-pink">Rota 10x</span>
           </a>
-          <nav className="hidden gap-6 text-sm font-medium text-brand-dark md:flex">
+          <nav className="hidden items-center gap-3 text-xs font-medium text-brand-dark lg:flex xl:gap-5 xl:text-sm">
             {headerLinks.map((link) => (
               <a key={link.href} href={link.href} className="transition hover:text-brand-pink">
                 {link.label}
               </a>
             ))}
           </nav>
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-pink text-white shadow-sm transition hover:bg-[#d0175b] lg:hidden"
+            aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
+        {isMobileMenuOpen && (
+          <nav
+            id="mobile-navigation"
+            className="border-t border-pink-200 bg-white/95 px-4 py-4 shadow-lg backdrop-blur-md lg:hidden"
+          >
+            <div className="mx-auto grid max-w-7xl gap-1">
+              {headerLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="rounded-xl px-4 py-3 font-medium text-brand-dark transition hover:bg-brand-pinkLight hover:text-brand-pink"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
       </header>
+      {isMobileMenuOpen && (
+        <button
+          type="button"
+          aria-label="Fechar menu"
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 z-40 cursor-default bg-brand-dark/10 backdrop-blur-sm lg:hidden"
+        />
+      )}
 
       <main id="hero">
         <section className="bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -86,7 +131,7 @@ function App() {
               Aula: Como diminuir o número da balança sem dietas malucas e sem depender de sorte
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-lg font-semibold leading-8 text-brand-dark sm:text-xl">
-              Rota 10x: O método testado e aprovado por mais de 400 mulheres para você parar de tentar emagrecer no escuro e saber exatamente o que comer e como treinar
+              Clique no vídeo e veja o passo a passo de tudo que você precisa fazer para perder de 5 a 10kg em até 10 semanas! Sem Mounjaro, sem passar fome e sem ficar horas treinando!
             </p>
 
             <motion.div
@@ -115,7 +160,7 @@ function App() {
               </div>
             </motion.div>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <CtaButton />
+              <CtaButton label="Quero transformar meu corpo em 10 Semanas "/>
             </div>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               {heroStats.map((stat) => (
@@ -127,103 +172,10 @@ function App() {
           </div>
         </section>
 
-        <section id="benefits" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Benefícios imediatos</p>
-              <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
-                O que muda pra você desde a primeira semana
-              </h2>
-            </div>
-            <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              {benefits.map((benefit, index) => {
-                const Icon = benefit.icon;
-                return (
-                  <motion.article
-                    key={benefit.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.08 }}
-                    className="rounded-3xl bg-white p-6 text-center"
-                  >
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[1.5rem]" style={{ backgroundColor: `${benefit.color}20`, color: benefit.color }}>
-                      <Icon className="h-8 w-8" />
-                    </div>
-                    <h3 className="mt-6 font-display text-xl font-semibold text-brand-dark">{benefit.title}</h3>
-                    <p className="mt-4 text-sm leading-7 text-gray-600">{benefit.description}</p>
-                  </motion.article>
-                );
-              })}
-            </div>
-            <div className="mt-10 flex justify-center">
-              <CtaButton compact />
-            </div>
-          </div>
-        </section>
-
-        <section id="product" className="bg-[#fdf7fa] px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Por dentro do produto</p>
-                <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
-                  O que você recebe ao entrar
-                </h2>
-                <p className="mt-4 text-lg leading-8 text-gray-700">
-                  Um método estruturado para te levar do ponto inicial ao resultado com clareza, organização e estratégia, sem promessas milagrosas.
-                </p>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {productItems.map((item, index) => (
-                  <div key={item} className="rounded-3xl border border-pink-100 bg-white p-5 shadow-sm">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-pink text-sm font-bold text-white">
-                        {index + 1}
-                      </div>
-                      <p className="text-sm leading-7 text-gray-700">{item}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mt-10 flex justify-center">
-              <CtaButton compact />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-            <div className="rounded-[2rem] bg-brand-pinkLight p-8 text-center shadow-sm">
-              <div className="mx-auto overflow-hidden rounded-full bg-white p-1 shadow-inner" style={{ width: '14rem', height: '14rem' }}>
-                <img src={professorImage} alt="Professor Gustavo" className="h-full w-full rounded-full object-cover" />
-              </div>
-              <p className="mt-6 text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Seu professor</p>
-              <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark">Gustavo</h2>
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Quem será seu professor</p>
-              <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
-                Formação e experiência que unem treino e nutrição
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-gray-700">
-                Formado em Educação Física e pós-graduado em Treinamento Esportivo, além de formado em Nutrição, Gustavo uniu treino e alimentação em um único método simples, acessível e pensado para mulheres que querem emagrecer de verdade, sem depender de academia cara ou acompanhamento individual.
-              </p>
-              <p className="mt-4 text-lg font-semibold text-brand-dark">
-                Hoje já ajudou mais de 400 alunas a mudarem o corpo com esse método.
-              </p>
-              <div className="mt-8">
-                <CtaButton compact />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="testimonials" className="bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8">
+        <section id="testimonials" className="scroll-mt-20 bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Depoimentos</p>
-            <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">Quem já viveu a transformação</h2>
+            <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">O que as alunas falam!</h2>
             <div className="mt-10 rounded-[2rem] bg-white p-6 shadow-soft sm:p-10">
               <div className="mx-auto flex max-w-3xl flex-col items-center">
                 <div className="flex items-center gap-3">
@@ -253,12 +205,105 @@ function App() {
               </div>
             </div>
             <div className="mt-10 flex justify-center">
-              <CtaButton compact />
+              <CtaButton label='Quero ter acesso ao Rota 10x agora '/>
             </div>
           </div>
         </section>
 
-        <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <section id="benefits" className="scroll-mt-20 bg-white px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Benefícios imediatos</p>
+              <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
+                O que muda pra você desde a primeira semana
+              </h2>
+            </div>
+            <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {benefits.map((benefit, index) => {
+                const Icon = benefit.icon;
+                return (
+                  <motion.article
+                    key={benefit.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.08 }}
+                    className="rounded-3xl bg-white p-6 text-center"
+                  >
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[1.5rem]" style={{ backgroundColor: `${benefit.color}20`, color: benefit.color }}>
+                      <Icon className="h-8 w-8" />
+                    </div>
+                    <h3 className="mt-6 font-display text-xl font-semibold text-brand-dark">{benefit.title}</h3>
+                    <p className="mt-4 text-sm leading-7 text-gray-600">{benefit.description}</p>
+                  </motion.article>
+                );
+              })}
+            </div>
+            <div className="mt-10 flex justify-center">
+              <CtaButton label='Quero recuperar minha autoestima hoje'/>
+            </div>
+          </div>
+        </section>
+
+        <section id="product" className="scroll-mt-20 bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Por dentro do produto</p>
+                <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
+                  Conheça o passo a passo do Rota 10X
+                </h2>
+                <p className="mt-4 text-lg leading-8 text-gray-700">
+                  Um método estruturado para te levar do ponto inicial ao resultado com clareza, organização e estratégia, sem promessas milagrosas.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {productItems.map((item, index) => (
+                  <div key={item} className="rounded-3xl border border-pink-100 bg-white p-5 shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-pink text-sm font-bold text-white">
+                        {index + 1}
+                      </div>
+                      <p className="text-sm leading-7 text-gray-700">{item}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-10 flex justify-center">
+              <CtaButton label='Quero me sentir bem ao me olhar no espelho'/>
+            </div>
+          </div>
+        </section>
+
+        <section id="professor" className="scroll-mt-20 bg-white px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div className="rounded-[2rem] bg-brand-pinkLight p-8 text-center shadow-sm">
+              <div className="mx-auto overflow-hidden rounded-full bg-white p-1 shadow-inner" style={{ width: '14rem', height: '14rem' }}>
+                <img src={professorImage} alt="Professor Gustavo" className="h-full w-full rounded-full object-cover" />
+              </div>
+              <p className="mt-6 text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Seu professor</p>
+              <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark">Gustavo</h2>
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Quem será seu professor</p>
+              <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
+                Formação e experiência que unem treino e nutrição
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-gray-700">
+                Formado em Educação Física e pós-graduado em Treinamento Esportivo, além de formado em Nutrição, Gustavo uniu treino e alimentação em um único método simples, acessível e pensado para mulheres que querem transformar o corpo em até 10 semanas, sem precisar gastar muito dinheiro com comida cara e treinos genéricos.
+              </p>
+              <p className="mt-4 text-lg font-semibold text-brand-dark">
+                Hoje já ajudou mais de 400 alunas a mudarem o corpo com esse método.
+              </p>
+              <div className="mt-8">
+                <CtaButton label='Quero emagrecer sem remédios'/>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="audience" className="scroll-mt-20 bg-white px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Para quem é</p>
@@ -272,18 +317,15 @@ function App() {
                 ))}
               </div>
             </div>
-            <div className="rounded-[2rem] border border-pink-100 bg-[#fdf7fa] p-8">
-              <h3 className="font-display text-2xl font-bold text-brand-dark">Como funciona a jornada</h3>
+            <div className="rounded-[2rem] border border-pink-100 bg-brand-pinkLight p-8">
+              <h3 className="font-display text-2xl font-bold text-brand-dark">O que você recebe ao entrar no Rota 10x</h3>
               <div className="mt-8 space-y-5">
                 {journeySteps.map((step, index) => (
-                  <div key={step.title} className="flex items-start gap-4">
+                  <div key={step} className="flex items-center gap-4">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-pink text-sm font-semibold text-white">
                       {index + 1}
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-brand-dark">{step.title}</h4>
-                      <p className="mt-1 text-sm leading-7 text-gray-600">{step.description}</p>
-                    </div>
+                    <p className="text-sm leading-7 text-gray-700">{step}</p>
                   </div>
                 ))}
               </div>
@@ -291,58 +333,66 @@ function App() {
           </div>
         </section>
 
-        <section className="bg-[#fdf7fa] px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl rounded-[2rem] bg-white p-8 shadow-sm lg:p-10">
+        <section id="comparison" className="scroll-mt-20 bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl rounded-[2rem] bg-brand-pinkLight p-8 shadow-sm lg:p-10">
             <div className="flex flex-col gap-10">
               <div className="relative">
-                <div className="absolute inset-x-0 top-0 flex justify-center">
-                  <h2 className="font-display text-3xl font-bold text-brand-dark sm:text-4xl">
-                    <span className="text-green-400">Com o Rota 10x</span>
-                    <span className="mx-2 text-[#FACC15]">vs</span>
-                    <span className="text-red-400">Sem o Rota 10X</span>
-                  </h2>
-                </div>
-                <div className="mt-16 grid gap-6 rounded-[2rem] bg-green-50 p-1 lg:grid-cols-2">
-                  <div className="rounded-[1.5rem] border border-green-200 bg-green-50 p-6 pt-10">
-                    <h3 className="font-display text-2xl font-semibold text-green-700">Certo — método</h3>
+                <div className="relative grid items-start gap-6 rounded-[2rem] p-1 lg:grid-cols-2">
+                  <div className="flex min-h-[18rem] flex-col justify-start rounded-[1.5rem] border border-green-200 bg-green-50 p-8">
+                    <h3 className="font-display text-2xl font-semibold text-green-700">Com o Rota 10x</h3>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-green-900">
-                      <li>• Treino e dieta calculados para o seu corpo e objetivo.</li>
-                      <li>• Alimentação flexível, sem cortar o que você gosta.</li>
-                      <li>• Resultado sustentável, sem efeito sanfona.</li>
-                      <li>• Acompanhamento estruturado em fases.</li>
+                      <li>• Treinos eficientes e dieta calculada de acordo com seu gasto calórico.</li>
+                      <li>• Alimentação flexível, podendo comer arroz, feijão, pão, macarrão!</li>
+                      <li>• Sem efeito sanfona! Você vai emagrecer e permanecer magra com um método sustentável.</li>
+                      <li>• Treinos que se renovam a cada 4 semanas, para não estagnar e continuar evoluindo.</li>
                     </ul>
                   </div>
-                  <div className="rounded-[1.5rem] border border-red-200 bg-red-50 p-6">
-                    <h3 className="font-display text-2xl font-semibold text-red-800">Errado — mercado</h3>
+                  <div className="flex justify-center lg:hidden">
+                    <span className="font-display text-3xl font-black text-[#FACC15] drop-shadow-sm">VS</span>
+                  </div>
+                  <span className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full bg-white px-3 py-2 font-display text-3xl font-black text-[#FACC15] shadow-md lg:block">
+                    VS
+                  </span>
+                  <div className="flex min-h-[18rem] flex-col justify-start rounded-[1.5rem] border border-red-200 bg-red-50 p-8">
+                    <h3 className="font-display text-2xl font-semibold text-red-800">Sem o Rota 10x</h3>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-red-900">
-                      <li>• Dietas da moda prometendo emagrecer muito rápido.</li>
-                      <li>• Treinos genéricos sem considerar seu nível.</li>
-                      <li>• Restrição extrema que ninguém consegue manter.</li>
+                      <li>• Dieta restritivas que você não consegue manter por muito tempo.</li>
+                      <li>• Treinos genéricos sem nenhum padrão.</li>
+                      <li>• Aquela dúvida se realmente está fazendo a coisa certa!</li>
                       <li>• Depender de sorte ou força de vontade.</li>
                     </ul>
                   </div>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Benefícios completos</p>
-                <div className="mt-6 flex flex-col gap-4">
-                  {completeBenefits.map((item) => (
-                    <div key={item} className="rounded-2xl border border-pink-100 bg-brand-pinkLight p-4">
-                      <Check className="h-5 w-5 text-brand-pink" />
-                      <p className="mt-3 text-sm leading-7 text-gray-700">{item}</p>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="offer" className="bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8">
+        <section id="offer" className="scroll-mt-20 bg-[#fdf7fa] px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl rounded-[2rem] border border-brand-pink/20 bg-gradient-to-br from-brand-pink via-[#f8c1d4] to-brand-pinkLight p-8 text-center shadow-soft lg:p-12">
-            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-dark/70">Oferta</p>
+            <div className="mx-auto grid max-w-4xl gap-4 text-left">
+              <div className="flex items-start gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-950 sm:p-6">
+                <span className="shrink-0 text-2xl" aria-hidden="true">❌</span>
+                <p className="text-lg leading-8">
+                  Para ter um Personal Trainer hoje, você pagaria no mínimo <strong>R$ 500 por mês.</strong>
+                </p>
+              </div>
+              <div className="flex items-start gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-950 sm:p-6">
+                <span className="shrink-0 text-2xl" aria-hidden="true">❌</span>
+                <p className="text-lg leading-8">
+                  Um Nutricionista para montar sua dieta custaria cerca de <strong>R$ 200 a R$ 300.</strong>
+                </p>
+              </div>
+              <div className="flex items-start gap-4 rounded-2xl border border-red-300 bg-red-100 p-5 font-semibold text-red-950 sm:p-6">
+                <span className="shrink-0 text-2xl" aria-hidden="true">❌</span>
+                <p className="text-lg leading-8">
+                  Isso, em 10 semanas, daria no mínimo <strong className="text-xl">R$ 1.500!</strong>
+                </p>
+              </div>
+            </div>
+            <p className="mt-10 text-sm font-semibold uppercase tracking-[0.35em] text-brand-dark/70">Oferta</p>
             <h2 className="mt-4 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
-              Pare de tentar sozinha — comece hoje com um método que já funcionou para centenas de mulheres.
+Mas entrando no Rota 10x, para perder de 5 a 10kg em até 10 semanas com treinos eficientes e um cardápio todo calculado pra você, você paga somente:  
             </h2>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <div className="rounded-2xl bg-white px-6 py-4 shadow-lg">
@@ -351,12 +401,12 @@ function App() {
               </div>
             </div>
             <div className="mt-8 flex justify-center">
-              <CtaButton />
+              <CtaButton label='Quero começar agora'/>
             </div>
           </div>
         </section>
 
-        <section id="faq" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <section id="faq" className="scroll-mt-20 bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Perguntas frequentes</p>
@@ -383,7 +433,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="border-t border-pink-100 bg-brand-pinkLight px-4 py-8 text-center text-sm text-gray-700 sm:px-6 lg:px-8">
+      <footer className="border-t border-pink-100 bg [#fdf7fa] px-4 py-8 text-center text-sm text-gray-700 sm:px-6 lg:px-8">
         <p>Gustavo Rota 10x • Método estruturado para mulheres que querem emagrecer sem sofrimento.</p>
       </footer>
     </>
