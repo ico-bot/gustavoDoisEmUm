@@ -5,6 +5,7 @@ export default defineConfig(function (_a) {
     var isVizualizacao = mode === 'vizualizacao';
     return {
         base: isVizualizacao ? '/gustavoDoisEmUm/' : '/',
+        assetsInclude: ['**/*.PNG'],
         plugins: [react()],
         build: {
             outDir: isVizualizacao ? 'docs' : 'dist',

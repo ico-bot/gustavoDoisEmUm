@@ -9,10 +9,30 @@ import {
   Trophy,
   UtensilsCrossed,
 } from 'lucide-react';
+import testimonial5719 from '../assets/IMG_5719.PNG';
+import testimonial5720 from '../assets/IMG_5720.PNG';
+import testimonial5721 from '../assets/IMG_5721.PNG';
+import testimonial5722 from '../assets/IMG_5722.PNG';
+import testimonial5723 from '../assets/IMG_5723.PNG';
+import testimonial5724 from '../assets/IMG_5724.PNG';
+import testimonial5725 from '../assets/IMG_5725.PNG';
+import testimonial5726 from '../assets/IMG_5726.PNG';
+import testimonial5727 from '../assets/IMG_5727.PNG';
+import testimonial5728 from '../assets/IMG_5728.PNG';
+import testimonial5729 from '../assets/IMG_5729.PNG';
+import testimonial5730 from '../assets/IMG_5730.PNG';
+import testimonial5731 from '../assets/IMG_5731.PNG';
+import visualCaseCarolIsidoro from '../assets/casosvisuais/Carol Isidoro_.jpg';
+import visualCaseCarol from '../assets/casosvisuais/Carol.jpg';
+import visualCaseGustavo from '../assets/casosvisuais/Gustavo.jpg';
+import visualCaseJeane from '../assets/casosvisuais/Jeane_.jpg';
+import visualCaseRafa from '../assets/casosvisuais/Rafa_.jpg';
+import visualCaseSamantha1 from '../assets/casosvisuais/Samantha (1).jpg';
+import visualCaseSamantha2 from '../assets/casosvisuais/Samantha (2).jpg';
+import visualCaseTamiris from '../assets/casosvisuais/Tamiris_.jpg';
 
 export const heroStats = [
   'Acesso imediato após a compra',
-  'Treinos gravados, no seu tempo',
   'Metodologia testada em mais de 400 alunas',
 ];
 
@@ -36,8 +56,8 @@ export const benefits = [
     color: '#2E8B57',
   },
   {
-    title: 'Até 10x mais barato',
-    description: 'Tudo isso gastando 10X menos',
+    title: 'Tudo isso gastando 10x menos ',
+    description: 'Você não precisa gastar uma forturna para emagrecer.',
     icon: CircleDollarSign,
     color: '#FACC15',
   },
@@ -98,27 +118,45 @@ export const faqs = [
   }
 ];
 
-export const testimonials = [
-  {
-    name: 'Fernanda, 32 anos',
-    text: 'Eu finalmente consegui seguir uma rotina sem me sentir presa. O método trouxe clareza e resultados reais.',
-    highlight: 'Transformação real em 10 semanas',
-  },
-  {
-    name: 'Marina, 29 anos',
-    text: 'Nunca achei que conseguiria treinar em casa e emagrecer sem passar fome. Hoje eu sigo com confiança.',
-    highlight: 'Mais leve e muito mais confiante',
-  },
-  {
-    name: 'Camila, 35 anos',
-    text: 'O plano fechou tudo para mim: treino, alimentação e acompanhamento. O resultado apareceu de forma sustentável.',
-    highlight: 'Sem efeito sanfona',
-  },
+export type Testimonial = {
+  image: string;
+  alt: string;
+};
+
+export const testimonials: Testimonial[] = [
+  testimonial5719,
+  testimonial5720,
+  testimonial5721,
+  testimonial5722,
+  testimonial5723,
+  testimonial5724,
+  testimonial5725,
+  testimonial5726,
+  testimonial5727,
+  testimonial5728,
+  testimonial5729,
+  testimonial5730,
+  testimonial5731,
+].map((image, index) => ({
+  image,
+  alt: `Print ${index + 1} de depoimento recebido pelo WhatsApp`,
+}));
+
+export const visualCases: Testimonial[] = [
+  { image: visualCaseCarolIsidoro, alt: 'Resultado visual de Carol Isidoro' },
+  { image: visualCaseCarol, alt: 'Resultado visual de Carol' },
+  { image: visualCaseGustavo, alt: 'Resultado visual de Gustavo' },
+  { image: visualCaseJeane, alt: 'Resultado visual de Jeane' },
+  { image: visualCaseRafa, alt: 'Resultado visual de Rafa' },
+  { image: visualCaseSamantha1, alt: 'Primeiro resultado visual de Samantha' },
+  { image: visualCaseSamantha2, alt: 'Segundo resultado visual de Samantha' },
+  { image: visualCaseTamiris, alt: 'Resultado visual de Tamiris' },
 ];
 
 export const headerLinks = [
   { label: 'Início', href: '#hero' },
   { label: 'Depoimentos', href: '#testimonials' },
+  { label: 'Resultados', href: '#visual-cases' },
   { label: 'Benefícios', href: '#benefits' },
   { label: 'Conteúdo', href: '#product' },
   { label: 'Professor', href: '#professor' },

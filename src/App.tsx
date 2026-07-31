@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Maximize,
   Menu,
+  Play,
   VolumeX,
   X,
 } from 'lucide-react';
@@ -21,6 +23,7 @@ import {
   journeySteps,
   productItems,
   testimonials,
+  visualCases,
 } from './data/content';
 
 const CtaButton = ({
@@ -33,7 +36,7 @@ const CtaButton = ({
   const Icon = ctaIcon;
   return (
     <a
-      href="#offer"
+      href="https://pay.hotmart.com/D86726702O?off=7h3op86o"
       className={`group inline-flex items-center justify-center gap-2 rounded-full bg-brand-pink px-6 py-3 font-semibold text-white transition hover:bg-[#d0175b] ${compact ? 'px-5 py-2.5 text-sm' : 'px-8 py-3.5 text-base'}`}
     >
       {label}
@@ -42,14 +45,112 @@ const CtaButton = ({
   );
 };
 
+const RestrictedVideo = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const sendCommand = (func: string, args: number[] = []) => {
+    iframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({ event: 'command', func, args }),
+      'https://www.youtube.com',
+    );
+  };
+
+  const togglePlayback = () => {
+    sendCommand('setPlaybackRate', [1]);
+    sendCommand(isPlaying ? 'pauseVideo' : 'playVideo');
+    setIsPlaying((current) => !current);
+  };
+
+  const enableAudio = () => {
+    sendCommand('setPlaybackRate', [1]);
+    sendCommand('unMute');
+    setIsMuted(false);
+  };
+
+  const enforceNormalSpeed = () => {
+    window.setTimeout(() => sendCommand('setPlaybackRate', [1]), 500);
+    window.setTimeout(() => sendCommand('setPlaybackRate', [1]), 1500);
+  };
+
+  const enterFullscreen = () => {
+    videoRef.current?.requestFullscreen();
+  };
+
+  return (
+    <div ref={videoRef} className="relative h-full w-full bg-black">
+      <iframe
+        ref={iframeRef}
+        className="pointer-events-none h-full w-full"
+        src="https://www.youtube.com/embed/eoFV_erHHzo?autoplay=1&mute=1&enablejsapi=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1&rel=0"
+        title="Vídeo de apresentação do Rota 10x"
+        allow="autoplay; encrypted-media; fullscreen"
+        referrerPolicy="strict-origin-when-cross-origin"
+        tabIndex={-1}
+        allowFullScreen
+        onLoad={enforceNormalSpeed}
+      />
+      {isMuted ? (
+        <button
+          type="button"
+          onClick={enableAudio}
+          className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-3xl bg-red-600/90 px-8 py-6 text-center text-white shadow-lg backdrop-blur-sm transition hover:bg-red-600"
+          aria-label="Ativar áudio do vídeo"
+        >
+          <VolumeX className="h-9 w-9" />
+          <span className="mt-3 text-lg font-bold sm:text-xl">Seu vídeo já começou</span>
+          <span className="mt-2 text-sm font-semibold sm:text-base">Clique para ouvir</span>
+        </button>
+      ) : (
+        <>
+          <button
+            type="button"
+            onClick={togglePlayback}
+            className="absolute inset-0 z-10 flex items-center justify-center text-white"
+            aria-label={isPlaying ? 'Pausar vídeo' : 'Reproduzir vídeo'}
+          >
+            {!isPlaying && (
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-black/60 shadow-lg backdrop-blur-sm">
+                <Play className="h-8 w-8" />
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={enterFullscreen}
+            className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition hover:bg-black/80"
+            aria-label="Expandir vídeo"
+          >
+            <Maximize className="h-5 w-5" />
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
 function App() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [activeTestimonial, setActiveTestimonial] = useState(1);
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [activeVisualCase, setActiveVisualCase] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    if (testimonials.length < 2) return;
+
     const timer = window.setInterval(() => {
       setActiveTestimonial((current) => (current + 1) % testimonials.length);
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (visualCases.length < 2) return;
+
+    const timer = window.setInterval(() => {
+      setActiveVisualCase((current) => (current + 1) % visualCases.length);
     }, 5000);
     return () => window.clearInterval(timer);
   }, []);
@@ -60,6 +161,14 @@ function App() {
 
   const nextTestimonial = () => {
     setActiveTestimonial((current) => (current + 1) % testimonials.length);
+  };
+
+  const prevVisualCase = () => {
+    setActiveVisualCase((current) => (current - 1 + visualCases.length) % visualCases.length);
+  };
+
+  const nextVisualCase = () => {
+    setActiveVisualCase((current) => (current + 1) % visualCases.length);
   };
 
   return (
@@ -127,8 +236,8 @@ function App() {
       <main id="hero">
         <section className="bg-brand-pinkLight px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-6xl text-center">
-            <h1 className="mx-auto max-w-3xl font-display text-4xl font-bold leading-tight text-brand-dark sm:text-5xl lg:text-6xl">
-              Aula: Como diminuir o número da balança sem dietas malucas e sem depender de sorte
+            <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold leading-[1.12] tracking-[-0.025em] text-brand-dark sm:text-5xl lg:text-6xl xl:text-7xl">
+              Me dê 10 semanas que te dou um shape novo
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-lg font-semibold leading-8 text-brand-dark sm:text-xl">
               Clique no vídeo e veja o passo a passo de tudo que você precisa fazer para perder de 5 a 10kg em até 10 semanas! Sem Mounjaro, sem passar fome e sem ficar horas treinando!
@@ -142,20 +251,7 @@ function App() {
             >
               <div className="relative overflow-hidden rounded-[1.5rem] bg-black p-1">
                 <div className="aspect-video overflow-hidden rounded-[1rem] bg-black">
-                  <button className="relative flex h-full w-full items-center justify-center">
-                    <div className="absolute inset-0 bg-red-600/95" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-                    <div className="relative z-10 flex flex-col items-center gap-3 text-center text-white">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15">
-                        <VolumeX className="h-6 w-6" />
-                      </div>
-                      <p className="text-lg font-semibold">Seu vídeo já começou.</p>
-                      <p className="text-sm text-white/90">Clique para assistir</p>
-                    </div>
-                  </button>
-                </div>
-                <div className="absolute inset-x-0 bottom-0 rounded-b-[1rem] bg-black/70 px-4 py-3 text-sm text-white">
-                  O vídeo inicia mudo para evitar surpresas. Clique para ativar o áudio.
+                  <RestrictedVideo />
                 </div>
               </div>
             </motion.div>
@@ -176,36 +272,98 @@ function App() {
           <div className="mx-auto max-w-7xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Depoimentos</p>
             <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">O que as alunas falam!</h2>
-            <div className="mt-10 rounded-[2rem] bg-white p-6 shadow-soft sm:p-10">
-              <div className="mx-auto flex max-w-3xl flex-col items-center">
-                <div className="flex items-center gap-3">
-                  <button onClick={prevTestimonial} className="rounded-full border border-pink-100 p-2 text-brand-pink">
+            {testimonials.length > 0 && <div className="mt-10 rounded-[2rem] bg-white p-4 shadow-soft sm:p-8 lg:p-10">
+              <div className="mx-auto flex max-w-5xl flex-col items-center">
+                <div className="flex h-[28rem] w-full items-center justify-center overflow-hidden rounded-[1.5rem] bg-brand-pinkLight p-3 sm:h-[36rem] sm:p-5 lg:h-[42rem]">
+                  <img
+                    src={testimonials[activeTestimonial].image}
+                    alt={testimonials[activeTestimonial].alt}
+                    className="h-full w-full rounded-2xl object-contain shadow-sm"
+                  />
+                </div>
+                {testimonials.length > 1 && <div className="mt-6 flex items-center gap-4">
+                  <button
+                    onClick={prevTestimonial}
+                    aria-label="Depoimento anterior"
+                    className="rounded-full border border-pink-100 bg-white p-2 text-brand-pink"
+                  >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
-                  <div className="w-full rounded-[1.5rem] border border-pink-100 bg-brand-pinkLight p-7">
-                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand-pink">{testimonials[activeTestimonial].highlight}</p>
-                    <p className="mt-4 text-xl leading-8 text-brand-dark">
-                      “{testimonials[activeTestimonial].text}”
-                    </p>
-                    <p className="mt-6 font-semibold text-brand-dark">{testimonials[activeTestimonial].name}</p>
-                  </div>
-                  <button onClick={nextTestimonial} className="rounded-full border border-pink-100 p-2 text-brand-pink">
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                </div>
-                <div className="mt-6 flex gap-2">
+                  <div className="flex max-w-[12rem] flex-wrap justify-center gap-2 sm:max-w-none">
                   {testimonials.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setActiveTestimonial(index)}
+                      aria-label={`Abrir depoimento ${index + 1}`}
                       className={`h-2.5 w-2.5 rounded-full ${index === activeTestimonial ? 'bg-brand-pink' : 'bg-pink-200'}`}
                     />
                   ))}
-                </div>
+                  </div>
+                  <button
+                    onClick={nextTestimonial}
+                    aria-label="Próximo depoimento"
+                    className="rounded-full border border-pink-100 bg-white p-2 text-brand-pink"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </div>}
               </div>
-            </div>
+            </div>}
             <div className="mt-10 flex justify-center">
               <CtaButton label='Quero ter acesso ao Rota 10x agora '/>
+            </div>
+          </div>
+        </section>
+
+        <section id="visual-cases" className="scroll-mt-20 bg-white px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-pink">Casos visuais</p>
+            <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark sm:text-4xl">
+              Resultados de quem seguiu o método
+            </h2>
+            {visualCases.length > 0 && (
+              <div className="mt-10 rounded-[2rem] bg-brand-pinkLight p-4 shadow-soft sm:p-8 lg:p-10">
+                <div className="mx-auto flex max-w-5xl flex-col items-center">
+                  <div className="flex h-[28rem] w-full items-center justify-center overflow-hidden rounded-[1.5rem] bg-white p-3 sm:h-[36rem] sm:p-5 lg:h-[42rem]">
+                    <img
+                      src={visualCases[activeVisualCase].image}
+                      alt={visualCases[activeVisualCase].alt}
+                      className="h-full w-full rounded-2xl object-contain shadow-sm"
+                    />
+                  </div>
+                  {visualCases.length > 1 && (
+                    <div className="mt-6 flex items-center gap-4">
+                      <button
+                        onClick={prevVisualCase}
+                        aria-label="Caso visual anterior"
+                        className="rounded-full border border-pink-100 bg-white p-2 text-brand-pink"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {visualCases.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setActiveVisualCase(index)}
+                            aria-label={`Abrir caso visual ${index + 1}`}
+                            className={`h-2.5 w-2.5 rounded-full ${index === activeVisualCase ? 'bg-brand-pink' : 'bg-pink-200'}`}
+                          />
+                        ))}
+                      </div>
+                      <button
+                        onClick={nextVisualCase}
+                        aria-label="Próximo caso visual"
+                        className="rounded-full border border-pink-100 bg-white p-2 text-brand-pink"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="mt-10 flex justify-center">
+              <CtaButton label="Quero conquistar meu resultado" />
             </div>
           </div>
         </section>
