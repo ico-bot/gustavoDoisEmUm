@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Maximize,
   Menu,
+  Minimize,
   Play,
   VolumeX,
   X,
@@ -50,10 +51,20 @@ const RestrictedVideo = () => {
   const videoRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-  const sendCommand = (func: string, args: number[] = []) => {
+  const sendCommand = (func: string, args: unknown[] = []) => {
     iframeRef.current?.contentWindow?.postMessage(
       JSON.stringify({ event: 'command', func, args }),
+      'https://www.youtube.com',
+    );
+  };
+
+  const connectToPlayer = () => {
+    iframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({ event: 'listening', id: 'restricted-video-player' }),
       'https://www.youtube.com',
     );
   };
@@ -66,25 +77,83 @@ const RestrictedVideo = () => {
 
   const enableAudio = () => {
     sendCommand('setPlaybackRate', [1]);
+    sendCommand('seekTo', [0, true]);
     sendCommand('unMute');
+    sendCommand('playVideo');
+    setCurrentTime(0);
     setIsMuted(false);
+    setIsPlaying(true);
   };
 
   const enforceNormalSpeed = () => {
-    window.setTimeout(() => sendCommand('setPlaybackRate', [1]), 500);
+    connectToPlayer();
+    window.setTimeout(() => {
+      connectToPlayer();
+      sendCommand('setPlaybackRate', [1]);
+      sendCommand('setOption', ['captions', 'track', {}]);
+      sendCommand('getCurrentTime');
+      sendCommand('getDuration');
+    }, 500);
     window.setTimeout(() => sendCommand('setPlaybackRate', [1]), 1500);
   };
 
-  const enterFullscreen = () => {
-    videoRef.current?.requestFullscreen();
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === videoRef.current);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  useEffect(() => {
+    const handlePlayerMessage = (event: MessageEvent) => {
+      if (event.source !== iframeRef.current?.contentWindow) return;
+
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (data?.event !== 'infoDelivery') return;
+
+        if (typeof data.info?.currentTime === 'number') setCurrentTime(data.info.currentTime);
+        if (typeof data.info?.duration === 'number') setDuration(data.info.duration);
+      } catch {
+        // Ignora mensagens do player que não estejam em JSON.
+      }
+    };
+
+    const progressTimer = window.setInterval(() => {
+      connectToPlayer();
+      sendCommand('getCurrentTime');
+      sendCommand('getDuration');
+    }, 250);
+
+    window.addEventListener('message', handlePlayerMessage);
+    return () => {
+      window.clearInterval(progressTimer);
+      window.removeEventListener('message', handlePlayerMessage);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen();
+      return;
+    }
+
+    void videoRef.current?.requestFullscreen();
   };
+
+  const realProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const initialProgressBoost = Math.min((currentTime / 2) * 15, 12);
+  const prankProgress = Math.min(initialProgressBoost + realProgress * 2.125, 100);
 
   return (
     <div ref={videoRef} className="relative h-full w-full bg-black">
       <iframe
+        id="restricted-video-player"
         ref={iframeRef}
         className="pointer-events-none h-full w-full"
-        src="https://www.youtube.com/embed/eoFV_erHHzo?autoplay=1&mute=1&enablejsapi=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1&rel=0"
+        src="https://www.youtube.com/embed/eoFV_erHHzo?autoplay=1&mute=1&enablejsapi=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&playsinline=1&rel=0"
         title="Vídeo de apresentação do Rota 10x"
         allow="autoplay; encrypted-media; fullscreen"
         referrerPolicy="strict-origin-when-cross-origin"
@@ -119,13 +188,24 @@ const RestrictedVideo = () => {
           </button>
           <button
             type="button"
-            onClick={enterFullscreen}
+            onClick={toggleFullscreen}
             className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition hover:bg-black/80"
-            aria-label="Expandir vídeo"
+            aria-label={isFullscreen ? 'Reduzir vídeo' : 'Expandir vídeo'}
           >
-            <Maximize className="h-5 w-5" />
+            {isFullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
           </button>
         </>
+      )}
+      {!isMuted && (
+        <div
+          className="absolute inset-x-0 bottom-0 z-30 h-2 bg-black/50"
+          aria-hidden="true"
+        >
+          <div
+            className="h-full bg-[#d0175b] transition-[width] duration-500 ease-linear"
+            style={{ width: `${prankProgress}%` }}
+          />
+        </div>
       )}
     </div>
   );
