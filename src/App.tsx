@@ -52,6 +52,7 @@ const RestrictedVideo = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSimulatedFullscreen, setIsSimulatedFullscreen] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -107,6 +108,16 @@ const RestrictedVideo = () => {
   }, []);
 
   useEffect(() => {
+    if (!isSimulatedFullscreen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isSimulatedFullscreen]);
+
+  useEffect(() => {
     const handlePlayerMessage = (event: MessageEvent) => {
       if (event.source !== iframeRef.current?.contentWindow) return;
 
@@ -134,21 +145,44 @@ const RestrictedVideo = () => {
     };
   }, []);
 
-  const toggleFullscreen = () => {
-    if (document.fullscreenElement) {
-      void document.exitFullscreen();
+  const toggleFullscreen = async () => {
+    if (isSimulatedFullscreen) {
+      setIsSimulatedFullscreen(false);
       return;
     }
 
-    void videoRef.current?.requestFullscreen();
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    if (!document.fullscreenEnabled || !videoRef.current?.requestFullscreen) {
+      setIsSimulatedFullscreen(true);
+      return;
+    }
+
+    try {
+      await videoRef.current.requestFullscreen();
+    } catch {
+      setIsSimulatedFullscreen(true);
+    }
   };
+
+  const isExpanded = isFullscreen || isSimulatedFullscreen;
 
   const realProgress = duration > 0 ? (currentTime / duration) * 100 : 0;
   const initialProgressBoost = Math.min((currentTime / 2) * 15, 12);
   const prankProgress = Math.min(initialProgressBoost + realProgress * 2.125, 100);
 
   return (
-    <div ref={videoRef} className="relative h-full w-full bg-black">
+    <div
+      ref={videoRef}
+      className={`bg-black ${
+        isSimulatedFullscreen
+          ? 'fixed inset-0 z-[9999] h-[100dvh] w-screen'
+          : 'relative h-full w-full'
+      }`}
+    >
       <iframe
         id="restricted-video-player"
         ref={iframeRef}
@@ -190,9 +224,9 @@ const RestrictedVideo = () => {
             type="button"
             onClick={toggleFullscreen}
             className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition hover:bg-black/80"
-            aria-label={isFullscreen ? 'Reduzir vídeo' : 'Expandir vídeo'}
+            aria-label={isExpanded ? 'Reduzir vídeo' : 'Expandir vídeo'}
           >
-            {isFullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+            {isExpanded ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
           </button>
         </>
       )}
