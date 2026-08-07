@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import {
   Check,
   ChevronLeft,
@@ -13,6 +14,9 @@ import {
   X,
 } from 'lucide-react';
 import professorImage from './assets/professor.png';
+import landingBanner from './assets/2-uLH98qQy.png';
+import landingExtraOne from './assets/5-TukLfg7n.png';
+import landingExtraTwo from './assets/6-D4fukZN9.png';
 import {
   audienceItems,
   benefits,
@@ -245,7 +249,7 @@ const RestrictedVideo = () => {
   );
 };
 
-function App() {
+function Rota10xPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [activeVisualCase, setActiveVisualCase] = useState(0);
@@ -709,6 +713,70 @@ Mas entrando no Rota 10x, para perder de 5 a 10kg em até 10 semanas com treinos
         <p>Gustavo Rota 10x • Método estruturado para mulheres que querem emagrecer sem sofrimento.</p>
       </footer>
     </>
+  );
+}
+
+function HomePage() {
+  return (
+    <>
+      <Helmet>
+        <title>Gustavo 2 em 1</title>
+      </Helmet>
+
+      <div className="landing-page-shell">
+        <section className="landing-top-bar">
+          <div className="landing-top-bar-inner">
+            <div className="landing-top-bar-image-frame">
+              <img
+                className="landing-top-bar-image"
+                src={landingBanner}
+                alt="Banner principal"
+              />
+            </div>
+          </div>
+        </section>
+
+        <div className="landing-gallery">
+          <a
+            className="landing-gallery-item landing-gallery-link"
+            href="https://api.whatsapp.com/send/?phone=5531995356001&text=Gustavo%2C+quero+saber+sobre+o+projeto+MSV&type=phone_number&app_absent=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Falar com Gustavo sobre o projeto MSV pelo WhatsApp"
+          >
+            <img
+              className="landing-gallery-image"
+              src={landingExtraOne}
+              alt="Conheça o projeto MSV"
+            />
+          </a>
+
+          <Link
+            className="landing-gallery-item landing-gallery-link"
+            to="/rota-10x"
+            aria-label="Conhecer o programa Rota 10x"
+          >
+            <img
+              className="landing-gallery-image"
+              src={landingExtraTwo}
+              alt="Conheça o programa Rota 10x"
+            />
+          </Link>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/rota-10x" element={<Rota10xPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -9,7 +9,6 @@ import {
   Trophy,
   UtensilsCrossed,
 } from 'lucide-react';
-import testimonial5719 from '../assets/IMG_5719.PNG';
 import testimonial5720 from '../assets/IMG_5720.PNG';
 import testimonial5721 from '../assets/IMG_5721.PNG';
 import testimonial5722 from '../assets/IMG_5722.PNG';
@@ -26,10 +25,9 @@ import visualCaseCarolIsidoro from '../assets/casosvisuais/Carol Isidoro_.jpg';
 import visualCaseCarol from '../assets/casosvisuais/Carol.jpg';
 import visualCaseGustavo from '../assets/casosvisuais/Gustavo.jpg';
 import visualCaseJeane from '../assets/casosvisuais/Jeane_.jpg';
-import visualCaseRafa from '../assets/casosvisuais/Rafa_.jpg';
 import visualCaseSamantha1 from '../assets/casosvisuais/Samantha (1).jpg';
 import visualCaseSamantha2 from '../assets/casosvisuais/Samantha (2).jpg';
-import visualCaseTamiris from '../assets/casosvisuais/Tamiris_.jpg';
+import visualCaseTamiris from "../assets/casosvisuais/Tamiris_.jpg";
 
 export const heroStats = [
   'Acesso imediato após a compra',
@@ -124,7 +122,6 @@ export type Testimonial = {
 };
 
 export const testimonials: Testimonial[] = [
-  testimonial5719,
   testimonial5720,
   testimonial5721,
   testimonial5722,
@@ -143,14 +140,13 @@ export const testimonials: Testimonial[] = [
 }));
 
 export const visualCases: Testimonial[] = [
+  { image: visualCaseGustavo, alt: 'Resultado visual de Gustavo' },
   { image: visualCaseCarolIsidoro, alt: 'Resultado visual de Carol Isidoro' },
   { image: visualCaseCarol, alt: 'Resultado visual de Carol' },
-  { image: visualCaseGustavo, alt: 'Resultado visual de Gustavo' },
   { image: visualCaseJeane, alt: 'Resultado visual de Jeane' },
-  { image: visualCaseRafa, alt: 'Resultado visual de Rafa' },
   { image: visualCaseSamantha1, alt: 'Primeiro resultado visual de Samantha' },
   { image: visualCaseSamantha2, alt: 'Segundo resultado visual de Samantha' },
-  { image: visualCaseTamiris, alt: 'Resultado visual de Tamiris' },
+  {image: visualCaseTamiris, alt: 'Resultado visual de Tamiris'}
 ];
 
 export const headerLinks = [
